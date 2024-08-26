@@ -5,6 +5,7 @@ services:
     image: postgres:13
     container_name: postgres_dev
     environment:
+      DATABASE_HOST: 127.0.0.1
       POSTGRES_USER: user_dev
       POSTGRES_PASSWORD: pass_dev
       POSTGRES_DB: db_dev
@@ -28,23 +29,6 @@ services:
       - "8081:80"
     depends_on:
       - postgres
-
-  server:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: server
-    restart: always
-    environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - PORT=8080
-    env_file:
-      - .env
-    ports:
-      - '8080:8080'
-    depends_on:
-      postgres:
-        condition: service_healthy
 
 volumes:
   postgres_data:

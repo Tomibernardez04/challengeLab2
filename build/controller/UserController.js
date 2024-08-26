@@ -9,9 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Constantes_1 = require("../tools/Constantes");
+const express_1 = require("express");
 const UserService_1 = require("../service/UserService");
-Constantes_1.router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const router = (0, express_1.Router)();
+router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {
         const token = yield (0, UserService_1.login)(email, password);
@@ -21,7 +22,7 @@ Constantes_1.router.post('/login', (req, res) => __awaiter(void 0, void 0, void 
         res.status(500).send({ message: e.message });
     }
 }));
-Constantes_1.router.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {
         const message = yield (0, UserService_1.register)(email, password);
@@ -31,4 +32,19 @@ Constantes_1.router.post('/register', (req, res) => __awaiter(void 0, void 0, vo
         res.status(500).send({ message: e.message });
     }
 }));
-exports.default = Constantes_1.router;
+router.post('/send', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { from, password, to, subject, text } = req.body;
+    try {
+        if ((yield (0, UserService_1.countEmails)(from)) < 1000) {
+            yield (0, UserService_1.send)(from, password, to, subject, text);
+            res.send({ message: 'Email Sent Successfully!' });
+        }
+        else {
+            res.status(403).send({ message: 'Cannot send more than 1000 emails per day' });
+        }
+    }
+    catch (e) {
+        res.status(500).send({ message: e.message });
+    }
+}));
+exports.default = router;

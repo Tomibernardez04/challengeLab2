@@ -4,14 +4,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const Constantes_1 = require("./tools/Constantes");
-const client_1 = require("@prisma/client");
+const dotenv_1 = __importDefault(require("dotenv"));
 const UserController_1 = __importDefault(require("./controller/UserController"));
-const prisma = new client_1.PrismaClient();
+const StatsController_1 = __importDefault(require("./controller/StatsController"));
+dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
-app.use(Constantes_1.router);
 app.use(UserController_1.default);
+app.use(StatsController_1.default);
 app.listen(3000, () => {
-    console.log('REST API server ready at: http://localhost:3000');
+    console.log("Server is running on port 3000");
 });
